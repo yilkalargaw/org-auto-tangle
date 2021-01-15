@@ -1,7 +1,6 @@
 #+title: org-auto-tangle
 #+author: Yilkal Argaw
 
-* Introduction
 
 This package (i.e org-auto-tangle) is a very simple emacs package that
 allows you to automatically tangle org files on save. This is done by
