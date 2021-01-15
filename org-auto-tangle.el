@@ -1,8 +1,10 @@
-;;; org-auto-tangle --- Basically it automatically tangles an org file based on an org option
+;;; org-auto-tangle.el --- Automatically and Asynchronously tangles org files on save -*- lexical-binding: t; -*-
 
 ;; Author: Yilkal Argaw
 ;; URL: https://github.com/yilkalargaw/auto-tangle
 ;; Version: 0.0.1
+;; Keywords: outlines
+;; Package-Requires: ((emacs "24.1"))
 
 ;; This file is not part of GNU Emacs
 
@@ -34,8 +36,8 @@
 ;; OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 ;; SUCH DAMAGE.
 
-
 ;;; Commentary:
+
 ;; It is common to want to tangle org files everytime you save your changes,
 ;; especially for common tangled init files. So this program allows you to
 ;; do so using #+auto_tangle option in an org file. It also does so asynchronously
