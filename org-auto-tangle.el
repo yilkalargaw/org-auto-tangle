@@ -59,7 +59,7 @@
 
 (add-hook 'org-mode-hook
           (lambda ()
-	    (when auto-tangle-tangle-on-save
+	    (when org-auto-tangle-tangle-on-save
 	      (defun org-auto-tangle-find-value (buffer)
 		"Search the `auto_tangle' property in BUFFER and extracts it when found."
 		(with-current-buffer buffer
