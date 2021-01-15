@@ -15,9 +15,7 @@ emacs session.
 Simply require the package in you emacs init.
 
 #+begin_src 
-
 (require 'org-auto-tangle)
-  
 #+end_src
 
 You can turn this behaviour on and off though the
