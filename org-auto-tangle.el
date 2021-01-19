@@ -4,7 +4,7 @@
 ;; URL: https://github.com/yilkalargaw/auto-tangle
 ;; Version: 0.0.1
 ;; Keywords: outlines
-;; Package-Requires: ((emacs "24.1"))
+;; Package-Requires: ((emacs "24.1") (async "1.9.3"))
 
 ;; This file is not part of GNU Emacs
 
