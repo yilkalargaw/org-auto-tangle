@@ -59,35 +59,36 @@
   :type 'boolean
   :group 'auto-tangle)
 
+(defun org-auto-tangle-find-value (buffer)
+  "Search the `auto_tangle' property in BUFFER and extracts it when found."
+  (with-current-buffer buffer
+    (save-restriction
+      (widen)
+      (save-excursion
+	(goto-char (point-min))
+	(when (re-search-forward "^#\\+auto_tangle: \\(.*\\)" nil :noerror)
+	  (match-string 1))))))
+
+(defun org-auto-tangle-async (file)
+  "Invoke `org-babel-tangle-file' asynchronously."
+  (message "Tangling %s..." (buffer-file-name))
+  (async-start
+   (let ((args (list file)))
+     `(lambda ()
+	(require 'org)
+	(let ((start-time (current-time)))
+	  (apply #'org-babel-tangle-file ',args)
+	  (format "%.2f" (float-time (time-since start-time))))))
+   (let ((message-string (format "Tangling %S completed after " file)))
+     `(lambda (tangle-time)
+	(message (concat ,message-string
+			 (format "%s seconds" tangle-time)))))))
+
+
+
 (add-hook 'org-mode-hook
           (lambda ()
 	    (when org-auto-tangle-tangle-on-save
-	      (defun org-auto-tangle-find-value (buffer)
-		"Search the `auto_tangle' property in BUFFER and extracts it when found."
-		(with-current-buffer buffer
-                  (save-restriction
-                    (widen)
-                    (save-excursion
-		      (goto-char (point-min))
-		      (when (re-search-forward "^#\\+auto_tangle: \\(.*\\)" nil :noerror)
-			(match-string 1))))))
-
-
-	      (defun org-auto-tangle-async (file)
-		"Invoke `org-babel-tangle-file' asynchronously."
-		(message "Tangling %s..." (buffer-file-name))
-		(async-start
-		 (let ((args (list file)))
-                   `(lambda ()
-		      (require 'org)
-		      (let ((start-time (current-time)))
-			(apply #'org-babel-tangle-file ',args)
-			(format "%.2f" (float-time (time-since start-time))))))
-		 (let ((message-string (format "Tangling %S completed after " file)))
-                   `(lambda (tangle-time)
-		      (message (concat ,message-string
-				       (format "%s seconds" tangle-time)))))))
-
 	      (add-hook 'after-save-hook
 			(lambda () (when (and (org-auto-tangle-find-value (current-buffer))
 					      (not (string= (org-auto-tangle-find-value(current-buffer)) "nil")))
