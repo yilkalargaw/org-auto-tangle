@@ -83,14 +83,13 @@
   "Automatically tangle org-mode files with the option #+auto_tangle: t."
   :lighter "org-auto-tangle"
 
-  (add-hook 'org-mode-hook
-            (lambda ()
-	      (when org-auto-tangle-mode
-		(add-hook 'after-save-hook
-			  (lambda () (when (and (org-auto-tangle-find-value (current-buffer))
-						(not (string= (org-auto-tangle-find-value(current-buffer)) "nil")))
-                                       (org-auto-tangle-async (buffer-file-name))))
-			  nil 'local)))))
+  (when org-auto-tangle-mode
+    (add-hook 'org-mode-hook
+	      (add-hook 'after-save-hook
+			(lambda () (when (and (org-auto-tangle-find-value (current-buffer))
+					      (not (string= (org-auto-tangle-find-value(current-buffer)) "nil")))
+				     (org-auto-tangle-async (buffer-file-name)))))
+	      nil 'local)))
 
 (provide 'org-auto-tangle)
 
