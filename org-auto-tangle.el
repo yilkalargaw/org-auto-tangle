@@ -54,11 +54,6 @@
 (require 'async)
 
 
-(defcustom org-auto-tangle-tangle-on-save t
-  "Enables the parsing of auto-tanlge option for org files."
-  :type 'boolean
-  :group 'auto-tangle)
-
 (defun org-auto-tangle-find-value (buffer)
   "Search the `auto_tangle' property in BUFFER and extracts it when found."
   (with-current-buffer buffer
@@ -84,16 +79,18 @@
 	(message (concat ,message-string
 			 (format "%s seconds" tangle-time)))))))
 
+(define-minor-mode org-auto-tangle-mode
+  "Automatically tangle org-mode files with the option #+auto_tangle: t."
+  :lighter "org-auto-tangle"
 
-
-(add-hook 'org-mode-hook
-          (lambda ()
-	    (when org-auto-tangle-tangle-on-save
-	      (add-hook 'after-save-hook
-			(lambda () (when (and (org-auto-tangle-find-value (current-buffer))
-					      (not (string= (org-auto-tangle-find-value(current-buffer)) "nil")))
-                                     (org-auto-tangle-async (buffer-file-name))))
-			nil 'local))))
+  (add-hook 'org-mode-hook
+            (lambda ()
+	      (when org-auto-tangle-mode
+		(add-hook 'after-save-hook
+			  (lambda () (when (and (org-auto-tangle-find-value (current-buffer))
+						(not (string= (org-auto-tangle-find-value(current-buffer)) "nil")))
+                                       (org-auto-tangle-async (buffer-file-name))))
+			  nil 'local)))))
 
 (provide 'org-auto-tangle)
 
