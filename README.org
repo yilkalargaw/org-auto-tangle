@@ -11,16 +11,19 @@ emacs session.
 
 * USAGE 
 
-Simply require the package in you emacs init.
+Simply require the package in you emacs init and hook it into org-mode.
 
 #+begin_src 
+
 (require 'org-auto-tangle)
+
+(add-hook 'org-mode-hook (org-auto-tangle-mode t))
+
 #+end_src
 
-You can turn this behaviour on and off though the
-~org-auto-tangle-tangle-on-save~  variable. If the value is non nil it
-is on it will try to automatically tangle your org files if they
-contain a non nil value for the ~#+auto_tangle:~ option.
+If the minor mode is on, it will try to automatically tangle
+your org files if they contain a non nil value for the
+~#+auto_tangle:~ option.
 
 * License
 
