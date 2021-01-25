@@ -83,8 +83,7 @@
   "Check if the #+auto_tangle option exists and call org-auto-tangle-async if it exists."
   (when (and (org-auto-tangle-find-value (current-buffer))
 	     (not (string= (org-auto-tangle-find-value(current-buffer)) "nil")))
-    (org-auto-tangle-async (buffer-file-name)))
-  )
+    (org-auto-tangle-async (buffer-file-name))))
 
 (define-minor-mode org-auto-tangle-mode
   "Automatically tangle org-mode files with the option #+auto_tangle: t."
