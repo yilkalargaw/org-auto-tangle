@@ -81,7 +81,7 @@
 
 (define-minor-mode org-auto-tangle-mode
   "Automatically tangle org-mode files with the option #+auto_tangle: t."
-  :lighter "org-auto-tangle"
+  :lighter " org-a-t"
 
   (when org-auto-tangle-mode
     (add-hook 'org-mode-hook
