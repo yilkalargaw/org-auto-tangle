@@ -65,7 +65,7 @@
 	  (match-string 1))))))
 
 (defun org-auto-tangle-async (file)
-  "Invoke `org-babel-tangle-file' asynchronously."
+  "Invoke `org-babel-tangle-file' asynchronously on FILE."
   (message "Tangling %s..." (buffer-file-name))
   (async-start
    (let ((args (list file)))
