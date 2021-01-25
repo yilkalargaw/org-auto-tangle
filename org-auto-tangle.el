@@ -81,7 +81,8 @@
 
 (defun org-auto-tangle-tangle-if-tag-exists ()
   "Check if the #+auto_tangle option exists and call org-auto-tangle-async if it exists."
-  (when (and (org-auto-tangle-find-value (current-buffer))
+  (when (and (string= (buffer-local-value 'major-mode (current-buffer)) "org-mode")
+	     (org-auto-tangle-find-value (current-buffer))
 	     (not (string= (org-auto-tangle-find-value(current-buffer)) "nil")))
     (org-auto-tangle-async (buffer-file-name))))
 
@@ -89,11 +90,10 @@
   "Automatically tangle org-mode files with the option #+auto_tangle: t."
   :lighter " org-a-t"
 
-  (when org-auto-tangle-mode
-    (add-hook 'org-mode-hook
-	      (add-hook 'after-save-hook
-			(org-auto-tangle-tangle-if-tag-exists)
-			nil 'local))))
+  (if org-auto-tangle-mode
+	      (add-hook 'after-save-hook 'org-auto-tangle-tangle-if-tag-exists
+			nil 'local)
+    (remove-hook 'after-save-hook 'org-auto-tangle-tangle-if-tag-exists)))
 
 (provide 'org-auto-tangle)
 
