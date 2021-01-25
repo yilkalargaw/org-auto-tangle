@@ -79,6 +79,13 @@
 	(message (concat ,message-string
 			 (format "%s seconds" tangle-time)))))))
 
+(defun org-auto-tangle-tangle-if-tag-exists ()
+  "Check if the #+auto_tangle option exists and call org-auto-tangle-async if it exists."
+  (when (and (org-auto-tangle-find-value (current-buffer))
+	     (not (string= (org-auto-tangle-find-value(current-buffer)) "nil")))
+    (org-auto-tangle-async (buffer-file-name)))
+  )
+
 (define-minor-mode org-auto-tangle-mode
   "Automatically tangle org-mode files with the option #+auto_tangle: t."
   :lighter " org-a-t"
@@ -86,10 +93,8 @@
   (when org-auto-tangle-mode
     (add-hook 'org-mode-hook
 	      (add-hook 'after-save-hook
-			(lambda () (when (and (org-auto-tangle-find-value (current-buffer))
-					      (not (string= (org-auto-tangle-find-value(current-buffer)) "nil")))
-				     (org-auto-tangle-async (buffer-file-name)))))
-	      nil 'local)))
+			(org-auto-tangle-tangle-if-tag-exists)
+			nil 'local))))
 
 (provide 'org-auto-tangle)
 
