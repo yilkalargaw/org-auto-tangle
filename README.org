@@ -13,7 +13,7 @@ emacs session.
 
 Simply require the package in you emacs init and hook it into org-mode.
 
-#+begin_src 
+#+begin_src emacs-lisp
 
 (require 'org-auto-tangle)
 
@@ -23,10 +23,10 @@ Simply require the package in you emacs init and hook it into org-mode.
 
 or you can use use-package
 
-#+begin_src
+#+begin_src emacs-lisp
 
 (use-package org-auto-tangle
-  :load-path "site-lisp/org-auto-tangle/"    ;; this line is necessary only if you cloned the repo in your site lisp directory 
+  :load-path "site-lisp/org-auto-tangle/"    ;; this line is necessary only if you cloned the repo in your site-lisp directory 
   :defer t
   :hook (org-mode . org-auto-tangle-mode)
   )
