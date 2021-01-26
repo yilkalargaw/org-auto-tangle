@@ -69,10 +69,9 @@
 	(let ((start-time (current-time)))
 	  (apply #'org-babel-tangle-file ',args)
 	  (format "%.2f" (float-time (time-since start-time))))))
-   (let ((message-string (format "Tangling %S completed after " file)))
+   (let ((message-string (format "Tangling %S completed after" file)))
      `(lambda (tangle-time)
-	(message (concat ,message-string
-			 (format "%s seconds" tangle-time)))))))
+	(message "%s %s seconds",message-string tangle-time)))))
 
 (defun org-auto-tangle-tangle-if-tag-exists ()
   "Check if the #+auto_tangle option exists and call org-auto-tangle-async if it exists."
