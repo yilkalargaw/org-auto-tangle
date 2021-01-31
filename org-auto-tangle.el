@@ -87,7 +87,7 @@
   (if org-auto-tangle-mode
 	      (add-hook 'after-save-hook 'org-auto-tangle-tangle-if-tag-exists
 			nil 'local)
-    (remove-hook 'after-save-hook 'org-auto-tangle-tangle-if-tag-exists)))
+    (remove-hook 'after-save-hook 'org-auto-tangle-tangle-if-tag-exists nil 'local)))
 
 (provide 'org-auto-tangle)
 
