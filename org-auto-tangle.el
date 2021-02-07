@@ -1,7 +1,7 @@
 ;;; org-auto-tangle.el --- Automatically and Asynchronously tangles org files on save -*- lexical-binding: t; -*-
 
 ;; Author: Yilkal Argaw
-;; URL: https://github.com/yilkalargaw/auto-tangle
+;; URL: https://github.com/yilkalargaw/org-auto-tangle
 ;; Version: 0.0.1
 ;; Keywords: outlines
 ;; Package-Requires: ((emacs "24.1") (async "1.9.3"))
