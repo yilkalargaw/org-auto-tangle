@@ -17,7 +17,7 @@ Simply require the package in you emacs init and hook it into org-mode.
 
 (require 'org-auto-tangle)
 
-(add-hook 'org-mode-hook org-auto-tangle-mode)
+(add-hook 'org-mode-hook 'org-auto-tangle-mode)
 
 #+end_src
 
