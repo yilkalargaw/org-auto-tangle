@@ -40,7 +40,7 @@
 
 ;;; Usage:
 
-;; - Add #+auto_tangle:t to your tangled org file
+;; - Add #+auto_tangle: t to your tangled org file
 ;; - Make changes to the emacs file and save your changes
 
 
