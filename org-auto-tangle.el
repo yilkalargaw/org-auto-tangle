@@ -75,7 +75,7 @@
 
 (defun org-auto-tangle-tangle-if-tag-exists ()
   "Check if the #+auto_tangle option exists and call org-auto-tangle-async if it exists."
-  (when (and (string= (buffer-local-value 'major-mode (current-buffer)) "org-mode")
+  (when (and (eq major-mode 'org-mode)
 	     (org-auto-tangle-find-value (current-buffer))
 	     (not (string= (org-auto-tangle-find-value(current-buffer)) "nil")))
     (org-auto-tangle-async (buffer-file-name))))
