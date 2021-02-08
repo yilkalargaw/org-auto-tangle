@@ -56,7 +56,7 @@
       (widen)
       (save-excursion
 	(goto-char (point-min))
-	(when (re-search-forward "^#\\+auto_tangle: \\(.*\\)" nil :noerror)
+	(when (re-search-forward "^#\\+auto_tangle:[ \t]+\\([^ \f\t\n\r\v]+\\)[ \t]*" nil :noerror)
 	  (match-string 1))))))
 
 (defun org-auto-tangle-async (file)
