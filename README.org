@@ -24,17 +24,19 @@ Simply require the package in you emacs init and hook it into org-mode.
 or you can use use-package
 
 #+begin_src emacs-lisp
-
 (use-package org-auto-tangle
   :load-path "site-lisp/org-auto-tangle/"    ;; this line is necessary only if you cloned the repo in your site-lisp directory 
   :defer t
   :hook (org-mode . org-auto-tangle-mode))
-
 #+end_src
 
 If the minor mode is on, it will try to automatically tangle
 your org files if they contain a non nil value for the
 ~#+auto_tangle:~ option.
+
+You can configure auto-tangle as the default behavior for all org buffers by
+setting the ~org-auto-tangle-default~ variable to ~t~. In this case, you can disable
+it for some buffers by setting the ~#+auto_tangle:~ option to ~nil~.
 
 * License
 
