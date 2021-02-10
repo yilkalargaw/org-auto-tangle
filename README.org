@@ -38,4 +38,4 @@ your org files if they contain a non nil value for the
 
 * License
 
-The org-auto-tangle is licensed under the The 2-Clause BSD License.
+This package (i.e. ~org-auto-tangle~) is licensed under the the 2-Clause BSD License.
