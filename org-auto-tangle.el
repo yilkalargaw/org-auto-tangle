@@ -55,9 +55,15 @@ If nil (default), auto-tangle will only happen on buffers with
 the `#+auto_tangle: t' keyword. If t, auto-tangle will happen on
 all Org buffers unless `#+auto_tangle: nil' is set.")
 
-(defun org-auto-tangle-find-value ()
-  "Search the `auto_tangle' property in the current buffer and extracts it when found."
-  (cadar (org-collect-keywords '("auto_tangle"))))
+(defun org-auto-tangle-find-value (buffer)
+  "Search the `auto_tangle' property in BUFFER and extracts it when found."
+  (with-current-buffer buffer
+    (save-restriction
+      (widen)
+      (save-excursion
+	(goto-char (point-min))
+	(when (re-search-forward "^#\\+auto_tangle: \\(.*\\)" nil :noerror)
+	  (match-string 1))))))
 
 (defun org-auto-tangle-async (file)
   "Invoke `org-babel-tangle-file' asynchronously on FILE."
