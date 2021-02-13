@@ -86,7 +86,7 @@ Tangle will happen depending on the value of
 `org-auto-tangle-default' and on the presence and value of the
 `#+auto_tangle' keyword in the current buffer. If present,
 `#+auto_tangle' always overrides `org-auto-tangle-default'."
-  (let ((auto-tangle-kw (org-auto-tangle-find-value)))
+  (let ((auto-tangle-kw (org-auto-tangle-find-value (current-buffer))))
     (when (and (eq major-mode 'org-mode)
 	       (or (and auto-tangle-kw
 	                (not (string= auto-tangle-kw "nil")))
