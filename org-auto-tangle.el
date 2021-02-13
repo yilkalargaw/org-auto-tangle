@@ -48,6 +48,12 @@
 
 (require 'async)
 
+(defvar org-auto-tangle-default nil
+  "Default behavior of org-auto-tangle.
+
+If nil (default), auto-tangle will only happen on buffers with
+the `#+auto_tangle: t' keyword. If t, auto-tangle will happen on
+all Org buffers unless `#+auto_tangle: nil' is set.")
 
 (defun org-auto-tangle-find-value (buffer)
   "Search the `auto_tangle' property in BUFFER and extracts it when found."
@@ -56,7 +62,7 @@
       (widen)
       (save-excursion
 	(goto-char (point-min))
-	(when (re-search-forward "^#\\+auto_tangle:[ \t]+\\([^ \f\t\n\r\v]+\\)[ \t]*" nil :noerror)
+	(when (re-search-forward "^#\\+auto_tangle: \\(.*\\)" nil :noerror)
 	  (match-string 1))))))
 
 (defun org-auto-tangle-async (file)
@@ -73,21 +79,29 @@
      `(lambda (tangle-time)
 	(message "%s %s seconds",message-string tangle-time)))))
 
-(defun org-auto-tangle-tangle-if-tag-exists ()
-  "Check if the #+auto_tangle option exists and call org-auto-tangle-async if it exists."
-  (when (and (eq major-mode 'org-mode)
-	     (org-auto-tangle-find-value (current-buffer))
-	     (not (string= (org-auto-tangle-find-value(current-buffer)) "nil")))
-    (org-auto-tangle-async (buffer-file-name))))
+(defun org-auto-tangle-tangle-if-needed ()
+  "Call org-auto-tangle-async if needed.
+
+Tangle will happen depending on the value of
+`org-auto-tangle-default' and on the presence and value of the
+`#+auto_tangle' keyword in the current buffer. If present,
+`#+auto_tangle' always overrides `org-auto-tangle-default'."
+  (let ((auto-tangle-kw (org-auto-tangle-find-value)))
+    (when (and (eq major-mode 'org-mode)
+	       (or (and auto-tangle-kw
+	                (not (string= auto-tangle-kw "nil")))
+                   (and (not auto-tangle-kw)
+                        org-auto-tangle-default)))
+      (org-auto-tangle-async (buffer-file-name)))))
 
 (define-minor-mode org-auto-tangle-mode
   "Automatically tangle org-mode files with the option #+auto_tangle: t."
   :lighter " org-a-t"
 
   (if org-auto-tangle-mode
-	      (add-hook 'after-save-hook #'org-auto-tangle-tangle-if-tag-exists
+	      (add-hook 'after-save-hook #'org-auto-tangle-tangle-if-needed
 			nil 'local)
-    (remove-hook 'after-save-hook #'org-auto-tangle-tangle-if-tag-exists 'local)))
+    (remove-hook 'after-save-hook #'org-auto-tangle-tangle-if-needed 'local)))
 
 (provide 'org-auto-tangle)
 
