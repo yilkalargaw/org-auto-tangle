@@ -62,8 +62,8 @@ all Org buffers unless `#+auto_tangle: nil' is set.")
       (widen)
       (save-excursion
 	(goto-char (point-min))
-	(when (re-search-forward "^#\\+auto_tangle: \\(.*\\)" nil :noerror)
-	  (match-string 1))))))
+	(when (re-search-forward (org-make-options-regexp '("auto_tangle")) nil :noerror)
+	  (match-string 2))))))
 
 (defun org-auto-tangle-async (file)
   "Invoke `org-babel-tangle-file' asynchronously on FILE."
