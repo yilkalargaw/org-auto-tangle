@@ -47,6 +47,7 @@
 ;;; Code:
 
 (require 'async)
+(require 'org)
 
 (defvar org-auto-tangle-default nil
   "Default behavior of org-auto-tangle.
