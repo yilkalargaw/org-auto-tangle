@@ -72,7 +72,7 @@ all Org buffers unless `#+auto_tangle: nil' is set.")
   (async-start
    (let ((args (list file)))
      `(lambda ()
-	;; (require 'org)
+	(require 'org)
 	(let ((start-time (current-time)))
 	  (apply #'org-babel-tangle-file ',args)
 	  (format "%.2f" (float-time (time-since start-time))))))
