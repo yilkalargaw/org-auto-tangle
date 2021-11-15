@@ -56,6 +56,13 @@ If nil (default), auto-tangle will only happen on buffers with
 the `#+auto_tangle: t' keyword. If t, auto-tangle will happen on
 all Org buffers unless `#+auto_tangle: nil' is set.")
 
+(defvar org-auto-tangle-babel-safelist '()
+  "List of full path of files for which code blocks need to be evaluated.
+
+By default, code blocks are not evaluated during the auto-tangle to avoid
+possible code execution from unstrusted source. To enable code blocks evaluation
+for a specific file, add its full path to this list.")
+
 (defun org-auto-tangle-find-value (buffer)
   "Search the `auto_tangle' property in BUFFER and extracts it when found."
   (with-current-buffer buffer
@@ -74,7 +81,8 @@ all Org buffers unless `#+auto_tangle: nil' is set.")
      `(lambda ()
 	(require 'org)
 	(let ((start-time (current-time))
-	      (non-essential t))
+	      (non-essential t)
+	      (org-confirm-babel-evaluate (not (member ,file ',org-auto-tangle-babel-safelist))))
 	  (apply #'org-babel-tangle-file ',args)
 	  (format "%.2f" (float-time (time-since start-time))))))
    (let ((message-string (format "Tangling %S completed after" file)))
