@@ -38,6 +38,16 @@ You can configure auto-tangle as the default behavior for all org buffers by
 setting the ~org-auto-tangle-default~ variable to ~t~. In this case, you can disable
 it for some buffers by setting the ~#+auto_tangle:~ option to ~nil~.
 
+* Babel Auto Tangle Safelist
+Add a list of files to the safelist to autotangle with noweb evaluation
+#+begin_src emacs-lisp
+    (setq org-auto-tangle-babel-safelist '(
+                                         "~/system.org"
+                                         "~/test.org"
+                                         ))
+#+end_src
+
+
 * License
 
 This package (i.e. ~org-auto-tangle~) is licensed under the the 2-Clause BSD License.
