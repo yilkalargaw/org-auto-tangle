@@ -104,6 +104,7 @@ Tangle will happen depending on the value of
                         org-auto-tangle-default)))
       (org-auto-tangle-async (buffer-file-name)))))
 
+;;;###autoload
 (define-minor-mode org-auto-tangle-mode
   "Automatically tangle org-mode files with the option #+auto_tangle: t."
   :lighter " org-a-t"
