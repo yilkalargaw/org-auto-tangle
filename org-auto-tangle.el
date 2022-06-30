@@ -1,6 +1,6 @@
 ;;; org-auto-tangle.el --- Automatically and Asynchronously tangles org files on save -*- lexical-binding: t; -*-
 
-;; Author: Yilkal Argaw
+;; Author: Yilkal Argaw <yilkalargawworkneh@gmail.com>
 ;; URL: https://github.com/yilkalargaw/org-auto-tangle
 ;; Version: 0.4.2
 ;; Keywords: outlines
@@ -47,6 +47,7 @@
 ;;; Code:
 
 (require 'async)
+(require 'cl-lib)
 (require 'org)
 
 (defvar org-auto-tangle-default nil
@@ -77,20 +78,23 @@ for a specific file, add its full path to this list.")
   "Invoke `org-babel-tangle-file' asynchronously on FILE."
   (message "Tangling %s..." (buffer-file-name))
   (async-start
-   (let ((args (list file)))
-     `(lambda ()
-        (require 'org)
-        (let ((start-time (current-time))
-              (non-essential t)
-              (org-confirm-babel-evaluate (not (member ,file ',org-auto-tangle-babel-safelist)))
-              (org-src-preserve-indentation ,org-src-preserve-indentation)
-              (org-babel-pre-tangle-hook ,org-babel-pre-tangle-hook)
-              (org-babel-post-tangle-hook ,org-babel-post-tangle-hook)))
-          (apply #'org-babel-tangle-file ',args)
-          (format "%.2f" (float-time (time-since start-time))))))
+   (let ((preserved (mapcar (lambda (v)
+                              (cons v (symbol-value v)))
+                            '(org-src-preserve-indentation
+                              org-babel-pre-tangle-hook
+                              org-babel-post-tangle-hook)))
+         (evaluate (not (member file org-auto-tangle-babel-safelist))))
+     (lambda ()
+       (require 'org)
+       (let ((start-time (current-time))
+             (non-essential t)
+             (org-confirm-babel-evaluate evaluate))
+         (cl-progv (mapcar #'car preserved) (mapcar #'cdr preserved)
+           (org-babel-tangle-file file))
+         (format "%.2f" (float-time (time-since start-time))))))
    (let ((message-string (format "Tangling %S completed after" file)))
-     `(lambda (tangle-time)
-        (message "%s %s seconds",message-string tangle-time)))))
+     (lambda (tangle-time)
+       (message "%s %s seconds" message-string tangle-time)))))
 
 (defun org-auto-tangle-tangle-if-needed ()
   "Call org-auto-tangle-async if needed.
