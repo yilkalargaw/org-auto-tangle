@@ -90,7 +90,7 @@ for a specific file, add its full path to this list.")
           (format "%.2f" (float-time (time-since start-time))))))
    (let ((message-string (format "Tangling %S completed after" file)))
      `(lambda (tangle-time)
-        (message "%s %s seconds",message-string tangle-time)))))
+        (message "%s %s seconds",message-string tangle-time))))
 
 (defun org-auto-tangle-tangle-if-needed ()
   "Call org-auto-tangle-async if needed.
