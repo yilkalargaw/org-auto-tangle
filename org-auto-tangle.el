@@ -70,9 +70,9 @@ for a specific file, add its full path to this list.")
     (save-restriction
       (widen)
       (save-excursion
-	(goto-char (point-min))
-	(when (re-search-forward (org-make-options-regexp '("auto_tangle")) nil :noerror)
-	  (match-string 2))))))
+        (goto-char (point-min))
+        (when (re-search-forward (org-make-options-regexp '("auto_tangle")) nil :noerror)
+          (match-string 2))))))
 
 (defun org-auto-tangle-async (file)
   "Invoke `org-babel-tangle-file' asynchronously on FILE."
@@ -105,8 +105,8 @@ Tangle will happen depending on the value of
 `#+auto_tangle' always overrides `org-auto-tangle-default'."
   (let ((auto-tangle-kw (org-auto-tangle-find-value (current-buffer))))
     (when (and (eq major-mode 'org-mode)
-	       (or (and auto-tangle-kw
-	                (not (string= auto-tangle-kw "nil")))
+               (or (and auto-tangle-kw
+                        (not (string= auto-tangle-kw "nil")))
                    (and (not auto-tangle-kw)
                         org-auto-tangle-default)))
       (org-auto-tangle-async (buffer-file-name)))))
@@ -117,8 +117,8 @@ Tangle will happen depending on the value of
   :lighter " org-a-t"
 
   (if org-auto-tangle-mode
-	      (add-hook 'after-save-hook #'org-auto-tangle-tangle-if-needed
-			nil 'local)
+      (add-hook 'after-save-hook #'org-auto-tangle-tangle-if-needed
+                nil 'local)
     (remove-hook 'after-save-hook #'org-auto-tangle-tangle-if-needed 'local)))
 
 (provide 'org-auto-tangle)
