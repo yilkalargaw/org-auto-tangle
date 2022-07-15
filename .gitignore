@@ -25,6 +25,8 @@ tramp
 /eshell/lastdir
 
 # elpa packages
+/org-auto-tangle-autoloads.el
+/org-auto-tangle-pkg.el
 elpa/
 /elpa/
 # Flycheck
