@@ -67,9 +67,9 @@ for a specific file, add its full path to this list.")
 (defun org-auto-tangle-find-value (buffer)
   "Search the `auto_tangle' property in BUFFER and extracts it when found."
   (with-current-buffer buffer
-    (save-restriction
-      (widen)
-      (save-excursion
+    (save-excursion
+      (save-restriction
+        (widen)
         (goto-char (point-min))
         (when (re-search-forward (org-make-options-regexp '("auto_tangle")) nil :noerror)
           (match-string 2))))))
