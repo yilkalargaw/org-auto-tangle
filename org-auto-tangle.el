@@ -49,6 +49,7 @@
 (require 'async)
 (require 'cl-lib)
 (require 'org)
+(require 'ox)				; org-export--parse-option-keyword
 
 (defvar org-auto-tangle-default nil
   "Default behavior of org-auto-tangle.
@@ -65,25 +66,99 @@ possible code execution from unstrusted source. To enable code blocks evaluation
 for a specific file, add its full path to this list.")
 
 (defun org-auto-tangle-find-value (buffer)
-  "Search the `auto_tangle' property in BUFFER and extracts it when found."
+  "Return the value of the `auto_tangle' keyword in BUFFER."
   (with-current-buffer buffer
-    (save-excursion
-      (save-restriction
-        (widen)
-        (goto-char (point-min))
-        (when (re-search-forward (org-make-options-regexp '("auto_tangle")) nil :noerror)
-          (match-string 2))))))
+    (cdr (assoc "AUTO_TANGLE" (org-collect-keywords '("AUTO_TANGLE"))))))
+
+;; This is modeled after `org-export-filters-alist', since it is
+;; passed to `org-export--parse-option-keyword'.
+(defconst org-auto-tangle-options-alist
+  '((:with-vars nil "vars" org-auto-tangle-with-vars))
+  "Alist between auto-tangle properties and ways to set them.
+
+The key of the alist is the property name, and the value is a list
+like (KEYWORD OPTION DEFAULT BEHAVIOR) where:
+
+KEYWORD is a string representing a buffer keyword, or nil.  Each
+  property defined this way can also be set, during subtree
+  export, through a headline property named after the keyword
+  with the \"EXPORT_\" prefix (i.e. DATE keyword and EXPORT_DATE
+  property).
+OPTION is a string that could be found in an #+OPTIONS: line.
+DEFAULT is the default value for the property.
+BEHAVIOR determines how Org should handle multiple keywords for
+  the same property.  It is a symbol among:
+  nil       Keep old value and discard the new one.
+  t         Replace old value with the new one.
+  `space'   Concatenate the values, separating them with a space.
+  `newline' Concatenate the values, separating them with
+	    a newline.
+  `split'   Split values at white spaces, and cons them to the
+	    previous list.
+  `parse'   Parse value as a list of strings and Org objects,
+            which can then be transcoded with, e.g.,
+            `org-export-data'.  It implies `space' behavior.
+
+Values set through KEYWORD and OPTION have precedence over
+DEFAULT.")
+
+(defgroup org-auto-tangle nil
+  "Automatic tangling of `org-mode' documents."
+  :tag "Org Auto Tangle"
+  :group 'org-babel)
+
+(defcustom org-auto-tangle-with-vars nil
+  "Non-nil means pass VARS variables to the async tangling process.
+
+This option can also be set with the AUTO_TANGLE keyword,
+e.g. \"vars:calendar-latitude\".
+
+The `org-src-preserve-indentation', `org-babel-pre-tangle-hook',
+and `org-babel-post-tangle-hook' variables are automatically
+preserved and do not need to be listed here."
+  :group 'org-auto-tangle
+  :type '(repeat (symbol :tag "Variable name")))
+
+(defun org-auto-tangle--get-inbuffer-options ()
+  "Return current buffer auto-tangle options, as a plist.
+
+Assume buffer is in Org mode.  Narrowing, if any, is ignored."
+  (let (plist)
+    ;; Read options in the current buffer and return value.
+  (dolist (entry (org-collect-keywords '("AUTO_TANGLE")) plist)
+    (pcase entry
+      (`("AUTO_TANGLE" . ,values)
+       (setq plist
+	     (apply #'org-combine-plists
+		    plist
+		    (mapcar (lambda (v)
+			      (let ((org-export-options-alist)))
+			      (org-auto-tangle--parse-auto-tangle-keyword v))
+			    values))))))))
+
+(defun org-auto-tangle--parse-auto-tangle-keyword (auto-tangle)
+  "Parse an AUTO-TANGLE line and return values as a plist."
+  (let ((org-export-options-alist org-auto-tangle-options-alist))
+    (org-export--parse-option-keyword auto-tangle)))
 
 (defun org-auto-tangle-async (file)
   "Invoke `org-babel-tangle-file' asynchronously on FILE."
   (message "Tangling %s..." (buffer-file-name))
   (async-start
-   (let ((preserved (mapcar (lambda (v)
+   (let* ((buf-vars (plist-get (org-auto-tangle--get-inbuffer-options)
+			       :with-vars))
+	  (with-vars (if buf-vars
+			 (mapcar #'intern
+				 (org-uniquify (org-split-string
+						(symbol-name buf-vars) ":")))
+		       org-auto-tangle-with-vars))
+	  (preserved (mapcar (lambda (v)
                               (cons v (symbol-value v)))
-                            '(org-src-preserve-indentation
-                              org-babel-pre-tangle-hook
-                              org-babel-post-tangle-hook)))
-         (evaluate (not (member file org-auto-tangle-babel-safelist))))
+			    (append '(org-src-preserve-indentation
+				      org-babel-pre-tangle-hook
+				      org-babel-post-tangle-hook)
+				    with-vars)))
+	  (evaluate (not (member file org-auto-tangle-babel-safelist))))
      (lambda ()
        (require 'org)
        (let ((start-time (current-time))
@@ -106,7 +181,7 @@ Tangle will happen depending on the value of
   (let ((auto-tangle-kw (org-auto-tangle-find-value (current-buffer))))
     (when (and (derived-mode-p 'org-mode)
                (if auto-tangle-kw
-                   (not (string= auto-tangle-kw "nil"))
+                   (not (member "nil" auto-tangle-kw))
                  org-auto-tangle-default))
       (org-auto-tangle-async (buffer-file-name)))))
 
