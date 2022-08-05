@@ -51,19 +51,23 @@
 (require 'org)
 (require 'ox)				; org-export--parse-option-keyword
 
-(defvar org-auto-tangle-default nil
+(defcustom org-auto-tangle-default nil
   "Default behavior of org-auto-tangle.
 
 If nil (default), auto-tangle will only happen on buffers with
 the `#+auto_tangle: t' keyword. If t, auto-tangle will happen on
-all Org buffers unless `#+auto_tangle: nil' is set.")
+all Org buffers unless `#+auto_tangle: nil' is set."
+  :group 'org-auto-tangle
+  :type 'boolean)
 
-(defvar org-auto-tangle-babel-safelist '()
+(defcustom org-auto-tangle-babel-safelist '()
   "List of full path of files for which code blocks need to be evaluated.
 
 By default, code blocks are not evaluated during the auto-tangle to avoid
 possible code execution from unstrusted source. To enable code blocks evaluation
-for a specific file, add its full path to this list.")
+for a specific file, add its full path to this list."
+  :group 'org-auto-tangle
+  :type '(repeat (file :tag "Full file path")))
 
 (defun org-auto-tangle-find-value (buffer)
   "Return the value of the `auto_tangle' keyword in BUFFER."
