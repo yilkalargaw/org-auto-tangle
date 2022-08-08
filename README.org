@@ -38,6 +38,28 @@ You can configure auto-tangle as the default behavior for all org buffers by
 setting the ~org-auto-tangle-default~ variable to ~t~. In this case, you can disable
 it for some buffers by setting the ~#+auto_tangle:~ option to ~nil~.
 
+The ~#+auto_tangle:~ option may also be used to specify variables that should be
+preserved in the asynchronous tangling process. For example, if you have
+installed a newer version of ~org-mode~ or additional Babel processors, using
+
+#+begin_src org
+  #+auto_tangle: vars:load-path
+#+end_src
+
+will be sure that they are available during tangling. The ~vars~ option takes a
+colon-separated list so multiple variables may be specified
+
+#+begin_src org
+  #+auto_tangle: vars:calendar-longitude:calendar-latitude:calendar-location-name
+#+end_src
+
+It is also possible to disable auto-tangling by adding the ~nil~ option to the 
+line without removing any ~vars~ list.
+
+#+begin_src org
+  #+auto_tangle: vars:load-path nil
+#+end_src
+
 * Babel Auto Tangle Safelist
 Add a list of files to the safelist to autotangle with noweb evaluation
 #+begin_src emacs-lisp
