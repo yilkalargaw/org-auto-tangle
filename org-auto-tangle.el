@@ -96,9 +96,9 @@ BEHAVIOR determines how Org should handle multiple keywords for
   t         Replace old value with the new one.
   `space'   Concatenate the values, separating them with a space.
   `newline' Concatenate the values, separating them with
-        a newline.
+            a newline.
   `split'   Split values at white spaces, and cons them to the
-        previous list.
+            previous list.
   `parse'   Parse value as a list of strings and Org objects,
             which can then be transcoded with, e.g.,
             `org-export-data'.  It implies `space' behavior.
