@@ -49,7 +49,7 @@
 (require 'async)
 (require 'cl-lib)
 (require 'org)
-(require 'ox)				; org-export--parse-option-keyword
+(require 'ox)               ; org-export--parse-option-keyword
 
 (defcustom org-auto-tangle-default nil
   "Default behavior of org-auto-tangle.
@@ -96,9 +96,9 @@ BEHAVIOR determines how Org should handle multiple keywords for
   t         Replace old value with the new one.
   `space'   Concatenate the values, separating them with a space.
   `newline' Concatenate the values, separating them with
-	    a newline.
+        a newline.
   `split'   Split values at white spaces, and cons them to the
-	    previous list.
+        previous list.
   `parse'   Parse value as a list of strings and Org objects,
             which can then be transcoded with, e.g.,
             `org-export-data'.  It implies `space' behavior.
@@ -129,16 +129,16 @@ preserved and do not need to be listed here."
 Assume buffer is in Org mode.  Narrowing, if any, is ignored."
   (let (plist)
     ;; Read options in the current buffer and return value.
-  (dolist (entry (org-collect-keywords '("AUTO_TANGLE")) plist)
-    (pcase entry
-      (`("AUTO_TANGLE" . ,values)
-       (setq plist
-	     (apply #'org-combine-plists
-		    plist
-		    (mapcar (lambda (v)
-			      (let ((org-export-options-alist)))
-			      (org-auto-tangle--parse-auto-tangle-keyword v))
-			    values))))))))
+    (dolist (entry (org-collect-keywords '("AUTO_TANGLE")) plist)
+      (pcase entry
+        (`("AUTO_TANGLE" . ,values)
+         (setq plist
+               (apply #'org-combine-plists
+                      plist
+                      (mapcar (lambda (v)
+                                (let ((org-export-options-alist)))
+                                (org-auto-tangle--parse-auto-tangle-keyword v))
+                              values))))))))
 
 (defun org-auto-tangle--parse-auto-tangle-keyword (auto-tangle)
   "Parse an AUTO-TANGLE line and return values as a plist."
@@ -150,19 +150,19 @@ Assume buffer is in Org mode.  Narrowing, if any, is ignored."
   (message "Tangling %s..." (buffer-file-name))
   (async-start
    (let* ((buf-vars (plist-get (org-auto-tangle--get-inbuffer-options)
-			       :with-vars))
-	  (with-vars (if buf-vars
-			 (mapcar #'intern
-				 (org-uniquify (org-split-string
-						(symbol-name buf-vars) ":")))
-		       org-auto-tangle-with-vars))
-	  (preserved (mapcar (lambda (v)
-                              (cons v (symbol-value v)))
-			    (append '(org-src-preserve-indentation
-				      org-babel-pre-tangle-hook
-				      org-babel-post-tangle-hook)
-				    with-vars)))
-	  (evaluate (not (member file org-auto-tangle-babel-safelist))))
+                               :with-vars))
+          (with-vars (if buf-vars
+                         (mapcar #'intern
+                                 (org-uniquify (org-split-string
+                                                (symbol-name buf-vars) ":")))
+                       org-auto-tangle-with-vars))
+          (preserved (mapcar (lambda (v)
+                               (cons v (symbol-value v)))
+                             (append '(org-src-preserve-indentation
+                                       org-babel-pre-tangle-hook
+                                       org-babel-post-tangle-hook)
+                                     with-vars)))
+          (evaluate (not (member file org-auto-tangle-babel-safelist))))
      (lambda ()
        (require 'org)
        (let ((start-time (current-time))
