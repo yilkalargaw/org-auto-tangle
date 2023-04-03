@@ -17,7 +17,7 @@ Simply require the package in you emacs init and hook it into org-mode.
 
 (require 'org-auto-tangle)
 
-(add-hook 'org-mode-hook 'org-auto-tangle-mode)
+(add-hook 'org-src-mode-hook 'org-auto-tangle-mode)
 
 #+end_src
 
@@ -27,7 +27,7 @@ or you can use use-package
 (use-package org-auto-tangle
   :load-path "site-lisp/org-auto-tangle/"    ;; this line is necessary only if you cloned the repo in your site-lisp directory 
   :defer t
-  :hook (org-mode . org-auto-tangle-mode))
+  :hook (org-src-mode . org-auto-tangle-mode))
 #+end_src
 
 If the minor mode is on, it will try to automatically tangle
